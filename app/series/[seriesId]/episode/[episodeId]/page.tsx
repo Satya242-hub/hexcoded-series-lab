@@ -73,6 +73,9 @@ export default function EpisodePreview() {
   const [seriesDNA, setSeriesDNA] =
     useState<SeriesDNA>(defaultSeriesDNA);
 
+  const [regenerating, setRegenerating] = useState(false);
+  const [regenerated, setRegenerated] = useState(false);
+
   useEffect(() => {
     const savedEpisodes = localStorage.getItem(
       "hexcoded-series-episodes"
@@ -164,6 +167,16 @@ export default function EpisodePreview() {
     hasVisualLook &&
     hasColorGrade;
 
+  const handleRegenerate = () => {
+    setRegenerating(true);
+    setRegenerated(false);
+
+    setTimeout(() => {
+      setRegenerating(false);
+      setRegenerated(true);
+    }, 1200);
+  };
+
   return (
     <main className="min-h-screen bg-[#f5f5f5] text-black">
       {/* HEADER */}
@@ -247,11 +260,28 @@ export default function EpisodePreview() {
 
             <button
               type="button"
-              className="flex-1 rounded-xl bg-black px-4 py-3 text-sm font-medium text-white hover:bg-gray-800"
+              onClick={handleRegenerate}
+              disabled={regenerating}
+              className="flex-1 rounded-xl bg-black px-4 py-3 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
             >
-              Regenerate
+              {regenerating
+                ? "Regenerating..."
+                : "Regenerate"}
             </button>
           </div>
+
+          {/* REGENERATED STATUS */}
+          {regenerated && (
+            <div className="mt-4 rounded-xl border border-black bg-gray-50 p-4 text-sm">
+              <p className="font-semibold">
+                Regenerated ✓
+              </p>
+
+              <p className="mt-1 text-gray-600">
+                Episode regenerated using the current Series DNA.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* SERIES DNA CHECK */}
