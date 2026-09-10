@@ -21,6 +21,37 @@ type SeriesDNA = {
   colorGrade: string;
 };
 
+const defaultEpisodes: Episode[] = [
+  {
+    id: 1,
+    title: "The Signal",
+    description:
+      "Maya discovers a mysterious signal in the city.",
+    duration: "15–30 sec",
+  },
+  {
+    id: 2,
+    title: "The Message",
+    description:
+      "The signal reveals a message meant specifically for Maya.",
+    duration: "15–30 sec",
+  },
+  {
+    id: 3,
+    title: "The Source",
+    description:
+      "Maya follows the signal to an abandoned facility.",
+    duration: "30–60 sec",
+  },
+  {
+    id: 4,
+    title: "The Hidden Door",
+    description:
+      "Maya follows the mysterious signal into an abandoned subway station and discovers a hidden door glowing with the same symbol as the signal.",
+    duration: "30–60 sec",
+  },
+];
+
 const defaultSeriesDNA: SeriesDNA = {
   seriesName: "The Last Signal",
   characterName: "Maya",
@@ -36,7 +67,7 @@ const defaultSeriesDNA: SeriesDNA = {
 export default function EpisodePreview() {
   const params = useParams();
 
-  const episodeId = Number(params.id);
+  const episodeId = Number(params.episodeId);
 
   const [episode, setEpisode] = useState<Episode | null>(null);
   const [seriesDNA, setSeriesDNA] =
@@ -51,22 +82,45 @@ export default function EpisodePreview() {
       "hexcoded-series-dna"
     );
 
+    /*
+     * Load the selected episode.
+     * Use saved episodes first, then fall back to the demo episode
+     * matching the URL.
+     */
     if (savedEpisodes) {
       try {
-        const allEpisodes: Episode[] = JSON.parse(savedEpisodes);
+        const allEpisodes: Episode[] =
+          JSON.parse(savedEpisodes);
 
         const selectedEpisode = allEpisodes.find(
           (item) => item.id === episodeId
         );
 
-        if (selectedEpisode) {
-          setEpisode(selectedEpisode);
-        }
+        setEpisode(
+          selectedEpisode ||
+            defaultEpisodes.find(
+              (item) => item.id === episodeId
+            ) ||
+            null
+        );
       } catch {
-        console.error("Could not load episodes.");
+        setEpisode(
+          defaultEpisodes.find(
+            (item) => item.id === episodeId
+          ) || null
+        );
       }
+    } else {
+      setEpisode(
+        defaultEpisodes.find(
+          (item) => item.id === episodeId
+        ) || null
+      );
     }
 
+    /*
+     * Load saved Series DNA.
+     */
     if (savedDNA) {
       try {
         const parsedDNA = JSON.parse(savedDNA);
@@ -76,19 +130,20 @@ export default function EpisodePreview() {
           ...parsedDNA,
         });
       } catch {
-        console.error("Could not load Series DNA.");
+        setSeriesDNA(defaultSeriesDNA);
       }
     }
   }, [episodeId]);
 
   const episodeTitle =
-    episode?.title || "The Hidden Door";
+    episode?.title || "Episode not found";
 
   const episodeDescription =
     episode?.description ||
-    "Maya follows the mysterious signal into an abandoned subway station.";
+    "This episode could not be found.";
 
-  const episodeNumber = episode?.id || episodeId;
+  const episodeNumber =
+    episode?.id || episodeId;
 
   const hasCharacter =
     Boolean(seriesDNA.characterName) &&
@@ -327,3 +382,4 @@ export default function EpisodePreview() {
     </main>
   );
 }
+
