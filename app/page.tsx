@@ -25,29 +25,19 @@ export default function Home() {
       {/* CONTENT */}
       <section className="mx-auto max-w-7xl px-8 py-10">
         {/* TITLE */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold">
-              Your Series
-            </h1>
+        <div>
+          <h1 className="text-3xl font-semibold">
+            Your Series
+          </h1>
 
-            <p className="mt-2 text-sm text-gray-500">
-              Create and manage your visual series with persistent
-              Series DNA.
-            </p>
-          </div>
-
-          <a
-            href="/series/create"
-            className="inline-flex w-fit rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-gray-800"
-          >
-            + New Series
-          </a>
+          <p className="mt-2 text-sm text-gray-500">
+            Create and manage your visual series with persistent
+            Series DNA.
+          </p>
         </div>
 
-        {/* SERIES GRID */}
-        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* THE LAST SIGNAL */}
+        {/* SERIES */}
+        <div className="mt-8 max-w-xl">
           <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
             {/* THUMBNAIL */}
             <div className="flex h-52 items-center justify-center bg-gray-900">
@@ -111,30 +101,8 @@ export default function Home() {
               </a>
             </div>
           </div>
-
-          {/* NEW SERIES CARD */}
-          <a
-            href="/series/create"
-            className="flex min-h-[430px] items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-white p-8 text-center transition hover:border-black"
-          >
-            <div>
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-black text-xl text-white">
-                +
-              </div>
-
-              <h2 className="mt-4 text-lg font-semibold">
-                Create a new series
-              </h2>
-
-              <p className="mt-2 text-sm leading-6 text-gray-500">
-                Define your characters and visual identity once,
-                then use them across future episodes.
-              </p>
-            </div>
-          </a>
         </div>
       </section>
     </main>
   );
 }
-

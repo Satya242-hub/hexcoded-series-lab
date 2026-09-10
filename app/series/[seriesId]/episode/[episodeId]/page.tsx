@@ -21,13 +21,26 @@ type SeriesDNA = {
   colorGrade: string;
 };
 
+const defaultSeriesDNA: SeriesDNA = {
+  seriesName: "The Last Signal",
+  characterName: "Maya",
+  appearance:
+    "Maya has shoulder-length dark hair and an expressive face. She wears a dark jacket with simple neutral clothing.",
+  faceReference: "demo-face-reference",
+  fullBodyReference: null,
+  aspectRatio: "9:16",
+  visualLook: "Cinematic",
+  colorGrade: "Neutral",
+};
+
 export default function EpisodePreview() {
   const params = useParams();
 
   const episodeId = Number(params.id);
 
   const [episode, setEpisode] = useState<Episode | null>(null);
-  const [seriesDNA, setSeriesDNA] = useState<SeriesDNA | null>(null);
+  const [seriesDNA, setSeriesDNA] =
+    useState<SeriesDNA>(defaultSeriesDNA);
 
   useEffect(() => {
     const savedEpisodes = localStorage.getItem(
@@ -56,7 +69,12 @@ export default function EpisodePreview() {
 
     if (savedDNA) {
       try {
-        setSeriesDNA(JSON.parse(savedDNA));
+        const parsedDNA = JSON.parse(savedDNA);
+
+        setSeriesDNA({
+          ...defaultSeriesDNA,
+          ...parsedDNA,
+        });
       } catch {
         console.error("Could not load Series DNA.");
       }
@@ -64,26 +82,26 @@ export default function EpisodePreview() {
   }, [episodeId]);
 
   const episodeTitle =
-    episode?.title || "Episode not found";
+    episode?.title || "The Hidden Door";
 
   const episodeDescription =
     episode?.description ||
-    "This episode could not be found.";
+    "Maya follows the mysterious signal into an abandoned subway station.";
 
   const episodeNumber = episode?.id || episodeId;
 
   const hasCharacter =
-    Boolean(seriesDNA?.characterName) ||
-    Boolean(seriesDNA?.appearance);
+    Boolean(seriesDNA.characterName) &&
+    Boolean(seriesDNA.faceReference);
 
   const hasAppearance =
-    Boolean(seriesDNA?.appearance);
+    Boolean(seriesDNA.appearance);
 
   const hasVisualLook =
-    Boolean(seriesDNA?.visualLook);
+    Boolean(seriesDNA.visualLook);
 
   const hasColorGrade =
-    Boolean(seriesDNA?.colorGrade);
+    Boolean(seriesDNA.colorGrade);
 
   const consistencyPassed =
     hasCharacter &&
@@ -124,8 +142,7 @@ export default function EpisodePreview() {
         {/* TITLE */}
         <div className="mt-6">
           <p className="text-sm text-gray-500">
-            {seriesDNA?.seriesName || "The Last Signal"} · Episode{" "}
-            {episodeNumber}
+            {seriesDNA.seriesName} · Episode {episodeNumber}
           </p>
 
           <h1 className="mt-2 text-3xl font-semibold">
@@ -270,7 +287,7 @@ export default function EpisodePreview() {
                 </span>
 
                 <span className="font-medium">
-                  {seriesDNA?.characterName || "Maya"}
+                  {seriesDNA.characterName}
                 </span>
               </div>
 
@@ -280,7 +297,7 @@ export default function EpisodePreview() {
                 </span>
 
                 <span className="font-medium">
-                  {seriesDNA?.visualLook || "Cinematic"}
+                  {seriesDNA.visualLook}
                 </span>
               </div>
 
@@ -290,7 +307,7 @@ export default function EpisodePreview() {
                 </span>
 
                 <span className="font-medium">
-                  {seriesDNA?.colorGrade || "Neutral"}
+                  {seriesDNA.colorGrade}
                 </span>
               </div>
 
@@ -300,7 +317,7 @@ export default function EpisodePreview() {
                 </span>
 
                 <span className="font-medium">
-                  {seriesDNA?.aspectRatio || "9:16"}
+                  {seriesDNA.aspectRatio}
                 </span>
               </div>
             </div>
@@ -310,4 +327,3 @@ export default function EpisodePreview() {
     </main>
   );
 }
-
